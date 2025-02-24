@@ -1,1 +1,2 @@
-![Pangea Question 1](https://github.com/mathieudesprez/Pangea/raw/main/Pangea_Q1.png)
+[Voir l'image Pangea_Q1](https://github.com/mathieudesprez/Pangea/raw/main/Pangea_Q1.png)
+
