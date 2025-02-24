@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Défi PANGEA</title>
+     <!-- Intégration de MathJax pour l'affichage des formules mathématiques -->
+
+    <script type="text/javascript" async
+        src="https://polyfill.io/v3/polyfill.min.js?features=es6">
+    </script>
+    <script type="text/javascript" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    
+    <style>
+    /* Importation de polices personnalisées depuis Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Luckiest+Guy&display=swap');
+        
+         /* Mise en page du corps de la page */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: start;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding-top: 20px;
+        }
+        /* Style du titre principal */
+        h1 {
+            font-family: 'Bungee Shade', cursive;
+            font-size: 60px;
+            margin-bottom: 10px;
+            text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.6);
+        }
+        /* Style du score affiché */
+        .score {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 28px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease-in-out; /* Ajout d'une transition */
+        }
+        .trophy {
+            display: inline-block;
+            font-size: 28px;
+            animation: none;
+        }
+        @keyframes bounceTrophy {
+            0%, 100% { transform: translateY(0); }
+            10% { transform: translateY(-10px); }
+            20% { transform: translateY(5px); }
+            30% { transform: translateY(-5px); }
+            40% { transform: translateY(3px); }
+            50% { transform: translateY(-3px); }
+        }
+        .animated-trophy {
+             animation: bounceTrophy 5s ease-in-out;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Grille contenant les questions */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 100px);
+            grid-gap: 15px;
+            margin-top: 20px;
+        }
+        /* Style des cases représentant les questions */
+        .square {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #000000, #2f2f2f);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 15px;
+            transition: transform 0.3s;
+        }
+        /* Ajout d'un style pour marquer une question déjà répondue vraie*/
+        .square.answered {
+            background: linear-gradient(135deg, #006400, #32cd32);
+            cursor: default;
+        }
+        /* Ajout d'un style pour marquer une question déjà répondue fausse*/
+        .square.answeredF {
+            background: linear-gradient(135deg, #8b0000, #4b0082);
+            cursor: default;
+        }
+        /* Effet au survol des cases */
+        .square:hover {
+            transform: scale(1.1);
+        }
+        /* Fenêtre modale pour poser une question */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 3px solid red;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            width: 400px;
+        }
+        /* Liste des réponses disponibles (pour certaines questions) */
+        .response-list {
+            display: none;
+            position: fixed;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            padding: 15px;
+            border: 2px solid black;
+            border-radius: 10px;
+            width: 200px;
+        }
+        .response-list button {
+            display: block;
+            margin: 5px 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎯 Défi PANGEA</h1>
+    <p class="score">Score: <span id="score">0</span> <span id="trophy">🏆</span></p>
+    <div class="grid" id="grid"></div>
+    
+    <div class="modal" id="modal">
+        <p id="question"></p>
+        <img id="question-image" src="" style="max-width: 100%; display: none;"/>
+        <input type="text" id="answer" placeholder="Votre réponse..." oninput="closeResponseList()">
+        <button onclick="checkAnswer()">Valider</button>
+    </div>
+    
+    <div class="response-list" id="response-list"></div>
+    
+    <script>
+    // Tableau contenant les questions
+        const questions = [
+            "Quelle réponse correspond aux coordonnées dans l’ordre des animaux suivants : dauphin, crabe et poisson&nbsp;?",
+            "La fraction représentant la partie grisée de la figure ci-dessous est :",
+            "12&#8239;140 + 4&#8239;600 + 860 + 6 + 4 + 90 + 5&#8239;400 + 6&#8239;800 = ?",
+            "Dans une ferme qui contient 8 vaches, 4 canards et 2 moutons, combien de pattes y a-t-il ?"
+        ];
+    // Liens vers les images des questions
+        const images = [
+            "https://raw.githubusercontent.com/mathieudesprez/Pangea/main/Pangea_Q1bis.png",
+            "https://raw.githubusercontent.com/mathieudesprez/Pangea/main/Pangea_Q2bis.png",
+            "", ""
+        ];
+    // Réponses possibles pour les questions à choix multiples
+        const responses = [
+           {"A": "(I;6),(C;7),(F;3)", "B": "(B;7),(D;8),(I;9)", "C": "(C;4),(B;7),(I;9)", "D": "(B;4),(F;3),(I;9)", "E": "(F;3),(B;7),(C;4)"},
+           {"A": "\\(\\frac{25}{36}\\)", "B": "\\(\\frac{24}{36}\\)", "C": "\\(\\frac{8}{18}\\)", "D": "\\(\\frac{5}{10}\\)", "E": "\\(\\frac{24}{64}\\)"},
+           {}, 
+           {}
+        ];
+
+    // Réponses correctes et points associés
+        const correctAnswers = ["D", "B", "C", "D"];
+        const questionPoints = [5, 5, 10, 5];
+        let score = 0;
+        
+        // Fonction pour mettre à jour le score avec animation après la fermeture de la fenêtre
+        function updateScore(newScore) {
+            setTimeout(() => {
+                let scoreElement = document.getElementById("score");
+                let trophyElement = document.getElementById("trophy");
+                scoreElement.textContent = newScore;
+            // Ajoute l'animation au trophée
+                trophyElement.classList.add("animated-trophy");
+            // Supprime l'animation après 5 secondes
+                setTimeout(() => {
+                trophyElement.classList.remove("animated-trophy");
+                }, 5000);
+            }, 300);
+        }
+
+        let currentQuestion = -1;
+        let answeredQuestions = new Array(questions.length).fill(false); // Suivi des questions répondues
+
+    // Fonction pour afficher la question sélectionnée
+        function openModal(index) {
+            if (answeredQuestions[index]) return; // Vérification si la question a déjà été répondue
+            currentQuestion = index;
+            document.getElementById("question").innerHTML = questions[index];
+            document.getElementById("modal").style.display = "block";
+
+    // Affichage de l'image si elle existe
+            const questionImage = document.getElementById("question-image");
+            if (images[index]) {
+                questionImage.src = images[index];
+                questionImage.style.display = "block";
+            } else {
+                questionImage.style.display = "none";
+            }
+            
+            showResponses(index);
+        }
+
+    // Vérification de la réponse saisie
+        function checkAnswer() {
+            const userAnswer = document.getElementById("answer").value.toUpperCase();
+            if (!answeredQuestions[currentQuestion] && userAnswer === correctAnswers[currentQuestion]) {
+                score += questionPoints[currentQuestion];
+                updateScore(score);
+                document.getElementById("score").textContent = score;
+                answeredQuestions[currentQuestion] = true;
+                document.getElementsByClassName("square")[currentQuestion].classList.add("answered"); // Marquage de la case
+            }
+            if (!answeredQuestions[currentQuestion] && userAnswer !== correctAnswers[currentQuestion]) {
+                answeredQuestions[currentQuestion] = true;
+                document.getElementsByClassName("square")[currentQuestion].classList.add("answeredF"); // Marquage de la case
+            }
+            document.getElementById("modal").style.display = "none";
+            document.getElementById("answer").value = "";
+        }
+        
+        function showResponses(index) {
+            const responseList = document.getElementById("response-list");
+            responseList.innerHTML = "";
+            
+            for (const key in responses[index]) {
+                let button = document.createElement("button");
+                button.innerHTML = `${key} → ${responses[index][key]}`;
+                button.onclick = function() {
+                    document.getElementById("answer").value = key;
+                    closeResponseList();
+                };
+                responseList.appendChild(button);
+            }
+            responseList.style.display = "block";
+        }
+        
+        function closeResponseList() {
+            document.getElementById("response-list").style.display = "none";
+        }
+
+        // Création de la grille de questions
+        const grid = document.getElementById("grid");
+        for (let i = 0; i < questions.length; i++) {
+            let square = document.createElement("div");
+            square.className = "square";
+            square.innerHTML = i + 1;
+            square.onclick = function() {
+                openModal(i);
+            };
+            grid.appendChild(square);
+        }
+    </script>
+</body>
+</html>
