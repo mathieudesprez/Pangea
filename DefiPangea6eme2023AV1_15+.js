@@ -251,3 +251,20 @@ function simulateAnswers() {
     checkAllAnswered(); // Vérifie et affiche le bilan si toutes sont répondues
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    let highestZ = 10; // Z-index de base
+
+    function bringToFront(element) {
+        highestZ += 1; // Augmente le z-index
+        element.style.zIndex = highestZ;
+    }
+
+    // Appliquer l'événement de mise au premier plan sur les éléments modaux
+    document.querySelectorAll(".modal, .response-list").forEach(el => {
+        el.addEventListener("click", function () {
+            bringToFront(this);
+        });
+    });
+});
+
+

@@ -98,6 +98,8 @@ h1 {
     overflow: auto; /* Ajoute un défilement si le contenu dépasse */
     box-shadow: 0px 4px 10px rgba(0,0,0,0.2); /* Ajoute une ombre légère */
     line-height: 1.5; /* Espacement des lignes à 1.5 */
+    z-index: 10; /* Niveau de base */
+
 
 }
 
@@ -118,6 +120,8 @@ h1 {
     max-height: 70vh;
     overflow: auto;
     /* Ajoute un défilement si le contenu dépasse */
+    z-index: 10; /* Niveau de base */
+
 }
 
 .response-list button {
