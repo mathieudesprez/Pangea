@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Défi PANGEA</title>
+
+    <link rel="stylesheet" href="DefiPangea6eme2024AV1_15+.css"> <!-- Ajout du CSS -->
+
+    <!-- Intégration de MathJax pour l'affichage des formules mathématiques -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']], // Formules inline : $...$ ou \( ... \)
+                displayMath: [['$$', '$$'], ['\\[', '\\]']] // Formules bloc : $$...$$ ou \[ ... \]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script type="text/javascript" async src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+
+    <h1 style="text-align: center;">
+        🎯 PANGEA lOGIQUE 2024 (Niv 1)
+    </h1>
+
+    <p class="score">Score: <span id="score">0</span> <span id="trophy">🏆</span></p>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="modal" id="modal">
+        <p id="question"></p>
+        <img id="question-image" src="" style="max-width: 100%; display: none;" />
+        <input type="text" id="answer" placeholder="Votre réponse...">
+        <button onclick="checkAnswer()">Valider</button>
+    </div>
+
+    <div class="response-list" id="response-list"></div>
+
+    <img id="bravo-image" src="Bravo2.png" alt="Bravo!" class="hidden">
+    <img id="pasbravo-image" src="PasBravo2.png" alt="Pas Bravo!" class="hidden">
+
+    <!-- Chargement du fichier JavaScript après MathJax -->
+    <script src="DefiPangea6eme2024AV1_15+.js"></script> <!-- Ajout du JavaScript -->
+    
+    
+    <button id="button1" onclick="showBilan()">Bilan</button>
+    <div id="bilan" style="display: none;"></div> <!-- Contenu géré par showBilan() -->
+    <p id="quizMessage" style="color: red; display: none;">⚠️ Il faut repondre au moins à 5 questions pour un bilan !</p>
+
+
+</body>
+
+</html>

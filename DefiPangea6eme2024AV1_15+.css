@@ -1,0 +1,227 @@
+/* Importation de polices personnalisées depuis Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Luckiest+Guy&display=swap');
+
+/* Mise en page du corps de la page */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    padding-top: 20px;
+}
+
+/* Style du titre principal */
+h1 {
+    font-family: 'Bungee Shade', cursive;
+    font-size: 50px;
+    margin-bottom: 10px;
+    text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* Style du score affiché */
+.score {
+    font-family: 'Luckiest Guy', cursive;
+    font-size: 28px;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease-in-out;
+    /* Ajout d'une transition */
+}
+
+/* Grille contenant les questions */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(5, 100px);
+    grid-gap: 15px;
+    margin-top: 20px;
+}
+
+
+
+
+
+
+/* Style des cases représentant les questions */
+.square {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #000000, #2f2f2f);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 15px;
+    transition: transform 0.3s;
+}
+
+
+/* Ajout d'un style pour marquer une question déjà répondue vraie*/
+.square.answered {
+    background: linear-gradient(135deg, #006400, #32cd32);
+    cursor: default;
+}
+
+/* Ajout d'un style pour marquer une question déjà répondue fausse*/
+.square.answeredF {
+    background: linear-gradient(135deg, #8b0000, #4b0082);
+    cursor: default;
+}
+
+/* Effet au survol des cases */
+.square:hover {
+    background-color: #2980b9;
+    transform: scale(1.1);
+}
+
+/* Fenêtre modale pour poser une question */
+.modal {
+    display: none;
+    position: fixed;
+    top: 10%;
+    left: 20%;
+    background: white;
+    border: 5px solid red;
+    padding: 2vw;
+    text-align: center;
+    border-radius: 10px;
+    
+    width: min(60vw, 60%); /* Prend la plus petite valeur entre 60% du parent et 60% de l'écran */
+    max-width: 90%; /* Pour éviter qu'elle soit trop large sur petits écrans */
+    height: min(70vh, 600px); /* Ne dépasse pas 600px mais reste proportionnelle */
+    max-height: 80vh; /* Empêche la modal de dépasser l'écran */
+
+    overflow: auto; /* Ajoute un défilement si le contenu dépasse */
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.2); /* Ajoute une ombre légère */
+    line-height: 1.5; /* Espacement des lignes à 1.5 */
+    z-index: 10; /* Niveau de base */
+
+
+}
+
+
+/* Liste des réponses disponibles */
+.response-list {
+    display: none;
+    position: fixed;
+    right: 10px;
+    top: 60%;
+    transform: translateY(-50%);
+    background: white;
+    padding: 1vw;
+    border: 2px solid black;
+    border-radius: 10px;
+    width: 25vw;
+    max-width: 30%;
+    max-height: 70vh;
+    overflow: auto;
+    /* Ajoute un défilement si le contenu dépasse */
+    z-index: 10; /* Niveau de base */
+
+}
+
+.response-list button {
+    display: block;
+    margin: 5px 0;
+    width: 100%;
+}
+
+
+
+/* Effet flash sur le texte Score: X */
+.flash {
+    animation: flashEffect 0.5s ease-in-out;
+}
+
+@keyframes flashEffect {
+    0% {
+        opacity: 1;
+        color: red;
+    }
+
+    50% {
+        opacity: 0.5;
+        color: gold;
+    }
+
+    100% {
+        opacity: 1;
+        color: red;
+    }
+}
+
+
+#result-form {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+#result-form input {
+    display: block;
+    width: 90%;
+    margin: 10px auto;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#result-form button {
+    background-color: green;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#result-form.hidden {
+    display: none;
+}
+
+#bravo-image, #pasbravo-image {
+    position: fixed;
+    top: 150px;
+    left: 50px;
+    width: 15vw;   /* 25% de la largeur de l’écran */
+    height: auto;   /* Ajuste automatiquement la hauteur pour garder les proportions */
+    display: none; /* Caché par défaut */
+    z-index: 1000; /* Toujours au-dessus */
+}
+
+#bilan {
+    position: fixed;
+    top: 150px;
+    left: 50px; /* Même position que #bravo-image et #pasbravo-image */
+    width: 15vw; /* 15% de la largeur de l’écran */
+    height: auto;
+    background-color: white; /* Ajout pour lisibilité */
+    border: 2px solid black;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    display: none; /* Caché par défaut */
+    z-index: 1000;
+}
+#button1 {
+    position: fixed;
+    top: 10px;   /* Distance par rapport au haut */
+    left: 10px;  /* Distance par rapport à la gauche */
+    padding: 10px;
+    background-color: blue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
